@@ -9,4 +9,6 @@ cl_price = pd.DataFrame()
 ohlcv_data = {}
 
 for ticker in stocks:
-    cl_price[ticker] = yf.download(ticker,start,end)['Adj Close']
+    cl_price[ticker] = yf.download(ticker, start, end)['Adj Close']
+
+cl_price.fillna(0, inplace=True)
