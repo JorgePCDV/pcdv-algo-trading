@@ -11,4 +11,7 @@ ohlcv_data = {}
 for ticker in stocks:
     cl_price[ticker] = yf.download(ticker, start, end)['Adj Close']
 
-cl_price.fillna(0, inplace=True)
+# this backfill method is recommended
+cl_price.fillna(method='bfill', axis=0, inplace=True)
+
+#cl_price.dropna(axis=0, inplace=True)
