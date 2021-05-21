@@ -23,3 +23,12 @@ while len(tickers) != 0 and attempt <= 5:
 
 close_prices.fillna(method='bfill', axis=0, inplace=True)
 close_prices.mean()
+close_prices.median()
+close_prices.std()
+
+daily_return = close_prices.pct_change()
+daily_return_alt = close_prices / close_prices.shift(1) - 1
+
+daily_return.mean()
+daily_return.median()
+daily_return.std()
