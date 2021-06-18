@@ -32,3 +32,6 @@ daily_return_alt = close_prices / close_prices.shift(1) - 1
 daily_return.mean()
 daily_return.median()
 daily_return.std()
+
+daily_return_rolling_mean = daily_return.rolling(window=20,min_periods=1).mean()
+daily_return_rolling_std = daily_return.rolling(window=20,min_periods=1).std()
