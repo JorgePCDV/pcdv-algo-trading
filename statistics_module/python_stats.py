@@ -35,3 +35,6 @@ daily_return.std()
 
 daily_return_rolling_mean = daily_return.rolling(window=20,min_periods=1).mean()
 daily_return_rolling_std = daily_return.rolling(window=20,min_periods=1).std()
+
+exponential_moving_average = daily_return.ewm(span=20,min_periods=20).mean()
+exponential_moving_std = daily_return.ewm(span=20,min_periods=20).std()
