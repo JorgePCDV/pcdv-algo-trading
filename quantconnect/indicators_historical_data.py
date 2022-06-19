@@ -1,3 +1,5 @@
+from collections import deque
+
 # region imports
 from AlgorithmImports import *
 # endregion
@@ -9,10 +11,13 @@ class IndicatorsHistoricalData(QCAlgorithm):
         self.SetCash(100000)  # Set Strategy Cash
         self.spy = self.AddEquity("SPY", Resolution.Daily).Symbol
 
-        self.sma = self.SMA(self.spy, 30, Resolution.Daily)
-        closing_prices = self.History(self.spy, 30, Resolution.Daily)["close"]
-        for time, price in closing_prices.loc[self.spy].items():
-            self.sma.Update(time, price)
+        # self.sma = self.SMA(self.spy, 30, Resolution.Daily)
+        # closing_prices = self.History(self.spy, 30, Resolution.Daily)["close"]
+        # for time, price in closing_prices.loc[self.spy].items():
+        #     self.sma.Update(time, price)
+
+        self.sma = CustomSimpleMovingAverage("CustomSMA", 30)
+        self.RegisterIndicator(self.spy, self.sma, Resolution.Daily)
 
     def OnData(self, data: Slice):
         if not self.sma.IsReady:
@@ -38,3 +43,18 @@ class IndicatorsHistoricalData(QCAlgorithm):
         self.Plot("Benchmark", "52w-High", high)
         self.Plot("Benchmark", "52w-Low", low)
         self.Plot("Benchmark", "SMA", self.sma.Current.Value)
+
+class CustomSimpleMovingAverage(PythonIndicator):
+
+    def __init__(self, name, period):
+        self.Name = name
+        self.Time = datetime.min
+        self.Value = 0
+        self.queue = deque(maxlen=period)
+
+    def Update(self, input):
+        self.queue.appendleft(input.Close)
+        self.Time = input.EndTime
+        count = len(self.queue)
+        self.Value = sum(self.queue) / count
+        return (count == self.queue.maxlen)
